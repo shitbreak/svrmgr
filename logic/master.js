@@ -3,6 +3,7 @@
  */
 var rpc = require('rpc/GaiaRPC.js');
 var Fiber = require('fibers');
+var fs = require('fs');
 var rpcapi = {};
 var master_module = {};
 var server = undefined;
@@ -22,11 +23,28 @@ rpcapi.regAgent = function(res,port)
     agentInfo.hostName = ip;
     agentInfo.agentProcs = [];
     agentInfo.conn=rpc.getClient(rpc.genEP(ip,port));
+    agentInfo.config = loadConfig(ip);
     agents[ip]=agentInfo;
     res.send(0);
 }
 
-
+function loadConfig(hostName)
+{
+    var fileUrl = './save/'+hostName+".cfg";
+    var fsStats = fs.existsSync(fileUrl);
+    var config = {};
+    if(fsStats)
+    {
+        config = JSON.parse(fs.readFileSync(fileUrl));
+    }
+    else
+    {
+        config.baseUrl = 'D:/shenzhengyi.dev/TrunkDm/GaiaWeb/DmGame';
+        config.procList = [];
+        fs.writeFileSync(fileUrl,JSON.stringify(config));
+    }
+    return config;
+}
 
 
 function bindMethod(method)
@@ -94,6 +112,27 @@ master_module.closeProc = function(hostName,pid)
         return false;
     var ret = agent.conn.callsync('closeProc',pid);
     if(ret &&ret[0] == 0)
+        return true;
+    return false;
+}
+master_module.getConfig = function(hostName)
+{
+    var agent = getAgent(hostName);
+    if(!agent)
+        return undefined;
+    return agent.config;
+}
+master_module.saveConfig = function (hostName, config)
+{
+    var agent = getAgent(hostName);
+    if (!agent || !agent.conn)
+        return false;
+    agent.config = config;
+    var fileUrl = './save/' + hostName + ".cfg";
+    var configStr = JSON.stringify(config)
+    fs.writeFileSync(fileUrl, configStr);
+    var ret = agent.conn.callsync('syncConfig', configStr);
+    if (ret && ret[0] == 0)
         return true;
     return false;
 }

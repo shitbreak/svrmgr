@@ -5,12 +5,18 @@
 var server_addr = "http://localhost:10001/users";
 
 var selectLi = undefined;
+var tmpConfigItems = [];
+
 var sendMsg = function(method,callback,args)
 {
     $.post(server_addr, {action: method, args: JSON.stringify(args)}, function (data, status)
     {
         if (status != 'success')
-            return;//TODO give a warning msg
+        {
+            log(method+"called failed",3);
+            return;
+        }
+
         callback(data);
     });
 }
@@ -36,8 +42,17 @@ var log = function (content, type)
         p.addClass("text-danger");
     }
     var date = new Date();
-    var timeStr = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+    var timeStr = pad(date.getHours(),2)+":"+pad(date.getMinutes(),2)+":"+pad(date.getSeconds(),2);
     p.text("[" + flag + "] "+timeStr +": "  + content);
+}
+
+function pad(num, n) {
+    var len = num.toString().length;
+    while(len < n) {
+        num = "0" + num;
+        len++;
+    }
+    return num;
 }
 
 var formatRegExp = /%[sdj%]/g;
@@ -92,12 +107,13 @@ function onSelectItem(item)
         formContainer.append(form);
     }
 }
-var onClickStartNewProc = function()
+
+var onClickAddToConfig = function()
 {
     var action =$("#splmenu_ret").attr("value");
     if(!action || action == "")
     {
-        alert("xx");
+        alert("error");
         return;
     }
     var formContainer = $("#form_input_proc_option");
@@ -110,7 +126,37 @@ var onClickStartNewProc = function()
         var val = child.val();
         if (!val || val == "")
         {
-            alert("xx");
+            alert("error");
+            return;
+        }
+        option[child.attr("optionKey")] = val;
+    }
+
+    var object = {};
+    object.execFile = $("#splmenu_ret").attr("exec");
+    object.argv = option;
+    tmpConfigItems.push(object);
+    $('#modal-container-config').model('show');
+}
+var onClickStartNewProc = function()
+{
+    var action =$("#splmenu_ret").attr("value");
+    if(!action || action == "")
+    {
+        alert("error");
+        return;
+    }
+    var formContainer = $("#form_input_proc_option");
+    var children = formContainer.children();
+
+    var option = {};
+    for(var i = 0;i<children.length;i++)
+    {
+        var child = $(children[i]).find("input");
+        var val = child.val();
+        if (!val || val == "")
+        {
+            alert("error");
             return;
         }
         option[child.attr("optionKey")] = val;
@@ -243,6 +289,26 @@ var updateInfo = function(hostName)
    },{"hostName":hostName});
 }
 
+
+var getConfig = function ()
+{
+    var hostName = selectLi.find('text').text();
+    sendMsg("getConfig", function (data)
+    {
+        log(JSON.stringify(data.data));
+
+    }, {"hostName": hostName});
+
+}
+var saveConfig = function ()
+{
+    var hostName = selectLi.find('text').text();
+    sendMsg("saveConfig", function (data)
+    {
+
+    }, {"hostName": hostName, config: {}});
+}
+
 var refreshSelectServer = function()
 {
     if(!selectLi)
@@ -281,7 +347,7 @@ var initServerlist = function()
        log("init server list ok");
        //直接继续初始化第一个服务器的信息
        onSelectServer(menu.children("div").get(0));
-   })
+   });
 }
 
 var registerHandles = function()
@@ -290,6 +356,11 @@ var registerHandles = function()
     {
         $("#splmenu_ret").attr("value","");
         $("#form_input_proc_option").empty();
+    });
+    $('#modal-container-config').on('show.bs.modal',function(e)
+    {
+
+        getConfig();
     });
 }
 

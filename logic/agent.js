@@ -11,6 +11,7 @@ var server = undefined;
 var master = undefined;
 var baseUrl = path.normalize('D:/shenzhengyi.dev/TrunkDm/GaiaWeb/DmGame');
 var port = 10003;
+var config = undefined;
 
 rpcapi.echo = function(res,args)
 {
@@ -42,6 +43,13 @@ rpcapi.closeProc = function(res,pid)
 rpcapi.killProc = function(res,pid)
 {
     res.send(childproc.Kill(pid));
+}
+
+rpcapi.syncConfig = function (res, cfg)
+{
+    baseUrl = cfg.baseUrl;
+    config = cfg;
+    res.send(0);
 }
 
 rpcapi.getProcMap = function(res)

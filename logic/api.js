@@ -34,7 +34,7 @@ api.getProclist = function(res,args)
     if(ret)
     {
 
-        obj.fields = {pid:"PID",execFile:"ExecFile",option:"参数"};
+        obj.fields = {pid:"PID",execFile:"ExecFile",option:"Argv"};
         obj.data = ret;
         res.send(obj);
     }
@@ -67,6 +67,24 @@ api.killProc = function(res,args)
         res.send({"result":0});
     else
         res.send({"result":1});
+}
+
+api.getConfig = function (res, args)
+{
+    var ret = master.getConfig(args.hostName);
+    if (ret)
+        res.send({"result": 0, data: ret});
+    else
+        res.send({"result": 1});
+}
+
+api.saveConfig = function (res, args)
+{
+    var ret = master.saveConfig(args.hostName, args.config);
+    if (ret)
+        res.send({"result": 0});
+    else
+        res.send({"result": 1});
 }
 
 for(var key in api)

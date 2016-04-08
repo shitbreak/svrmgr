@@ -62,13 +62,13 @@
               <em class="glyphicon glyphicon-align-left"></em>刷新
             </button>
             <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modal-container-start-new-proc">
-              <em class="glyphicon glyphicon-align-center"></em>启动新进程
+              <em class="glyphicon glyphicon-align-center"></em>编辑新进程
             </button>
-            <button class="btn btn-default" type="button">
+            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modal-container-config">
               <em class="glyphicon glyphicon-align-right"></em>编辑配置
             </button>
             <button class="btn btn-default" type="button" >
-              <em class="glyphicon glyphicon-align-justify"></em>一键启动
+              <em class="glyphicon glyphicon-align-justify"></em>启动配置
             </button>
           </div>
 
@@ -82,13 +82,13 @@
     </div>
 
 
-  <!---------------模态框 启动进程------------------------->
+  <!---------------------------------模态框 启动进程------------------------->
     <div class="modal fade" id="modal-container-start-new-proc" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            <h4 class="modal-title" id="myModalLabel">设置进程细节</h4>
           </div>
           <div class="modal-body">
             <div class="input-group">
@@ -113,15 +113,29 @@
                 <input type="text" class="form-control" id="xxx" readonly="true">
               </div>
             </form>
-
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">
-              Close
-            </button>
-            <button type="button" class="btn btn-primary" onclick='javascripts:onClickStartNewProc(this);'>
-              Start
-            </button>
+            <button type="button" class="btn btn-success" onclick='javascripts:onClickAddToConfig();'>仅添加到配置</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" onclick='javascripts:onClickStartNewProc(this);'>开始</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-------------------------------模态框 编辑配置------------------------------------------>
+    <div class="modal fade" id="modal-container-config" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">编辑启动配置</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" onclick='javascripts:onClickAddToConfig();'>添加进程</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" onclick='javascripts:pushConfig();'>保存</button>
           </div>
         </div>
       </div>
