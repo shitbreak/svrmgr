@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var master = require('./logic/master');
+global.master = master;
 
 var app = express();
 
@@ -56,5 +58,14 @@ app.use(function(err, req, res, next) {
   });
 });
 
+
 app.listen(10001);
+console.log("listening at %d for users",10001);
+master.listen(10002);
+console.log("listening at %d form agent",10002);
 module.exports = app;
+//process.send({foo:"hello"});
+process.on('message',function(data,server){
+// process.send("catch msg:"+data.toString());
+  console.log('catch msg:'+data.toString());
+});

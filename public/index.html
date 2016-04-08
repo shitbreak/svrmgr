@@ -9,21 +9,122 @@
     <link rel="icon" href="images/favicon.ico">
     <!-- Bootstrap -->
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
   <body>
-    <h1>你好，世界！</h1>
-    <%- message >
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="javascripts/jquery-1.12.2.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="javascripts/bootstrap.min.js"></script>
-    <div class="well well-sm">...</div>
+    <script src="javascripts/ajax.js"></script>
+
+    <div class="page-header">
+      <h2 style="text-align:center">DmGame Server Manager</h2>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2">
+          <h3>HOSTS</h3>
+          <div class="panel-group" id="pl_server_list">
+              <div class="panel panel-default " id = "pl_server_list_ele">
+                <div class="panel-heading" onclick='javascripts:onSelectServer(this.parentNode);return false;'>
+                  <a class="panel-title" style="cursor: pointer">
+                    <span class="badge pull-right">42</span>
+                    <text>192.168.1.1</text>
+                  </a>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h3 id="head_info">INFO</h3>
+          <table class="table table-default table-hover" id="tb_proc_list">
+            <thead><tr></tr></thead>
+            <tbody></tbody>
+            <tfoot>
+            <div class="btn-group" id="btn_group_close">
+              <button class="btn btn-default" type="button" id="btn_close" onclick="javascripts:btnOperaClick(this);">
+                <em class="glyphicon glyphicon-remove-circle"></em>Close
+              </button>
+              <button class="btn btn-default" type="button" id="btn_kill" onclick="javascripts:btnOperaClick(this);">
+                <em class="glyphicon glyphicon-remove"></em>Kill
+              </button>
+            </div>
+          </table>
+          <div class="btn-group btn-group-lg">
+            <button class="btn btn-default" type="button" onclick='javascripts:refreshSelectServer();'>
+              <em class="glyphicon glyphicon-align-left"></em>刷新
+            </button>
+            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modal-container-start-new-proc">
+              <em class="glyphicon glyphicon-align-center"></em>启动新进程
+            </button>
+            <button class="btn btn-default" type="button">
+              <em class="glyphicon glyphicon-align-right"></em>编辑配置
+            </button>
+            <button class="btn btn-default" type="button" >
+              <em class="glyphicon glyphicon-align-justify"></em>一键启动
+            </button>
+          </div>
+
+        </div>
+        <div class="col-md-4" >
+          <h3>LOG</h3>
+          <div id="div_log" style="height:600px; overflow-y:auto">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <!---------------模态框 启动进程------------------------->
+    <div class="modal fade" id="modal-container-start-new-proc" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            <div class="input-group">
+              <div class="input-group-btn">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Action <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" id="splmenu">
+                  </ul>
+                </div>
+              </div>
+              <input type="text" class="form-control" id="splmenu_ret" readonly="true">
+            </div>
+            <form id="form_input_proc_option">
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">Recipient:</label>
+                <input type="text" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="xxx" class="control-label">Message:</label>
+                <input type="text" class="form-control" id="xxx" readonly="true">
+              </div>
+            </form>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick='javascripts:onClickStartNewProc(this);'>
+              Start
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
